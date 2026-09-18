@@ -125,12 +125,11 @@ _modules/*
 /results/
 /phpunit*.xml
 
-#konfig email
-app/Config/Email.php
-app/Config/App.php
+#Aktifkan kalau sudah di konfig
+#app/Config/Email.php
+#app/Config/App.php
 
 #push notification service worker file
-public/firebase-messaging-sw.js
+#public/firebase-messaging-sw.js
 
-fb_auth.json
 
