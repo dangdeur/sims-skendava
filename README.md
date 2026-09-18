@@ -44,7 +44,7 @@ Restart nginx
 ```bash
 systemctl restart nginx
 ```
-##Database
+## Database
 Buat database untuk aplikasi
 ```bash
 mysql -u root
