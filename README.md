@@ -1,11 +1,47 @@
 # Sistem Administrasi Manajemen Sekolah
 
-## Installasi
+## Installasi Web Server
 
 ```bash
-apt -y install php-intl php-curl php-mbstring php-xml php-mysql zip unzip php-zip php-imagick
-git clone https://github.com/dangdeur/ci4starter.git
+# apt -y install git composer nginx mariadb-server php-fpm php-intl php-curl php-mbstring php-xml php-mysql zip unzip php-zip php-imagick
+# nano /etc/nginx/sites-available/sims-skendava
 ```
+Isi dengan teks berikut
+
+```bash
+server {
+        listen 9920;
+	    root /var/www/sims-skendava/public;
+        index index.php index.html index.htm index.nginx-debian.html;
+        server_name _;
+        location / {
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+		    fastcgi_read_timeout 36000s;
+        }
+  	    location ~ /\.ht {
+            deny all;
+        }
+}
+```
+## Clone aplikasi
+```bash
+cd /var/www/
+git clone https://github.com/dangdeur/sims-skendava.git
+composer update
+```
+Buat simbolic links
+```bash
+ln -s /etc/nginx/sites-available/sims-skendava /etc/nginx/sites-enabled/
+```
+Restart nginx
+```bash
+systemctl restart nginx
+```
+
 
 ## Pengaturan
 
