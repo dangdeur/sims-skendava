@@ -31,6 +31,7 @@ server {
 ```bash
 cd /var/www/
 git clone https://github.com/dangdeur/sims-skendava.git
+cd sims-skendava
 composer update
 ```
 Buat simbolic links
@@ -44,10 +45,28 @@ systemctl restart nginx
 
 
 ## Pengaturan
-Buat file .env dari template dan sesuaikan parameter database
+Buat file .env dari template
 ```bash
 cp env .env
 ```
+Edit file .env dan ubah ENVIRONMENT sesuai kebutuhan
+```bash
+#CI_ENVIRONMENT = production
+CI_ENVIRONMENT = development
+```
+Sesuaikan pengaturan DATABASE
+```bash
+database.default.hostname = localhost
+database.default.database = ci4
+database.default.username = root
+database.default.password = root
+database.default.DBDriver = MySQLi
+# database.default.DBPrefix =
+database.default.port = 3306
+```
+
+
+
 app/Config/Pengaturan.php
 
 import data Pendidik dan Tenaga kependidikan kedalam tabel staf
