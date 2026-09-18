@@ -44,7 +44,10 @@ systemctl restart nginx
 
 
 ## Pengaturan
-
+Buat file .env dari template dan sesuaikan parameter database
+```bash
+cp env .env
+```
 app/Config/Pengaturan.php
 
 import data Pendidik dan Tenaga kependidikan kedalam tabel staf
