@@ -33,6 +33,8 @@ cd /var/www/
 git clone https://github.com/dangdeur/sims-skendava.git
 cd sims-skendava
 composer update
+chown -R www-data:www-data /var/www/sims-skendava/writable/
+chmod -R 775 /var/www/sims-skendava/writable/
 ```
 Buat simbolic links
 ```bash
@@ -41,6 +43,18 @@ ln -s /etc/nginx/sites-available/sims-skendava /etc/nginx/sites-enabled/
 Restart nginx
 ```bash
 systemctl restart nginx
+```
+##Database
+Buat database untuk aplikasi
+```bash
+mysql -u root
+```
+```mysql
+MariaDB [(none)]> CREATE DATABASE skendava;
+MariaDB [(none)]> CREATE USER 'skendava'@'%' IDENTIFIED BY 'password';
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON skendava.* TO 'skendava'@'%';
+MariaDB [(none)]> FLUSH PRIVILEGES;
+MariaDB [(none)]> EXIT
 ```
 
 
@@ -57,14 +71,16 @@ CI_ENVIRONMENT = development
 Sesuaikan pengaturan DATABASE
 ```bash
 database.default.hostname = localhost
-database.default.database = ci4
-database.default.username = root
-database.default.password = root
+database.default.database = skendava
+database.default.username = skendava
+database.default.password = password
 database.default.DBDriver = MySQLi
 # database.default.DBPrefix =
 database.default.port = 3306
 ```
+```bash
 
+```
 
 
 app/Config/Pengaturan.php
