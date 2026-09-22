@@ -1,4 +1,11 @@
 # Sistem Administrasi Manajemen Sekolah
+## Pengujian
+|               | Versi         |
+| ------------- |:------------- |
+| OS      | Ubuntu 24.04.5, Debian 11 |
+| PHP     | PHP-FPM 8.3.6, PHP8.4.12      |
+| Web Server | Nginx 1.24.0      |
+| DB | MariaDB 10.5.29,15.1      |
 
 ## Installasi Web Server
 
