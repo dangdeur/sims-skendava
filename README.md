@@ -7,7 +7,7 @@
 | Web Server | Nginx 1.24.0      |
 | DB | MariaDB 10.5.29,15.1      |
 
-## Installasi Web Server
+## Installasi Dependensi
 
 ```bash
 # apt -y install git composer nginx mariadb-server php-fpm php-intl php-curl php-mbstring php-xml php-mysql zip unzip php-zip php-imagick
@@ -22,8 +22,7 @@ composer update
 chown -R www-data:www-data /var/www/sims-skendava/writable/
 chmod -R 775 /var/www/sims-skendava/writable/
 ```
-
-Buat virtual host
+## Virtual host
 ```bash
 # nano /etc/nginx/sites-available/sims-skendava
 ```
