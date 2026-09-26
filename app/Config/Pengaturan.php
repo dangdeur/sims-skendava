@@ -11,11 +11,11 @@ class Pengaturan extends BaseConfig
         'email' => 'info@smkn2pandeglang.sch.id',
     ];
     public $web = [
-        'nama' => 'CI4 Starter',
-        'deskripsi' => 'CodeIgniter 4 Starter Template',
+        'nama' => 'SIMS',
+        'deskripsi' => 'Sistem Informasi Manajemen Sekolah',
         'template' => 'newage',
         'template_auth' => 'sbadmin',
-        'footer' => '@Endang Suhendar 2026',
+        'footer' => '@SMKN 2 Pandeglang 2026',
     ];
 
     public $user = [

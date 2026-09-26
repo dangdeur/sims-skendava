@@ -11,8 +11,23 @@
 
 ```bash
 # apt -y install git composer nginx mariadb-server php-fpm php-intl php-curl php-mbstring php-xml php-mysql zip unzip php-zip php-imagick
+```
+
+## Clone aplikasi
+```bash
+cd /var/www/
+git clone https://github.com/dangdeur/sims-skendava.git
+cd sims-skendava
+composer update
+chown -R www-data:www-data /var/www/sims-skendava/writable/
+chmod -R 775 /var/www/sims-skendava/writable/
+```
+
+Buat virtual host
+```bash
 # nano /etc/nginx/sites-available/sims-skendava
 ```
+
 Isi dengan teks berikut
 
 ```bash
@@ -34,15 +49,7 @@ server {
         }
 }
 ```
-## Clone aplikasi
-```bash
-cd /var/www/
-git clone https://github.com/dangdeur/sims-skendava.git
-cd sims-skendava
-composer update
-chown -R www-data:www-data /var/www/sims-skendava/writable/
-chmod -R 775 /var/www/sims-skendava/writable/
-```
+
 Buat simbolic links
 ```bash
 ln -s /etc/nginx/sites-available/sims-skendava /etc/nginx/sites-enabled/
@@ -85,12 +92,12 @@ database.default.DBDriver = MySQLi
 # database.default.DBPrefix =
 database.default.port = 3306
 ```
+app/Config/App.php
 ```bash
-
+public string $baseURL = 'http://localhost:9920/';
 ```
 
-
-app/Config/Pengaturan.php
+sesuaikan app/Config/Pengaturan.php
 
 import data Pendidik dan Tenaga kependidikan kedalam tabel staf
 sesuaikan Commands/SyncStafToShield.php
