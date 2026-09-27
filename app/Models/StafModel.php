@@ -35,10 +35,16 @@ class StafModel extends Model
                     ->set(['fcm_token' => $token])
                     ->update();
     }
+    
     // Mengambil daftar siswa atau guru untuk keperluan multi-user chat
     public function getUsersByRole($role)
     {
         return $this->where('role', $role)->where('active', 1)->findAll();
+    }
+
+    public function cekTabelKosong(): bool
+    {
+        return $this->countAllResults() === 0;
     }
 
    

@@ -20,11 +20,18 @@ class Pengguna extends BaseController
 
     public function getIndex(): string
     {
-        // Ambil profil staf yang sedang login menggunakan helper kustom kita
+    // 1. Cek proteksi login admin via Shield
+        if (!auth()->loggedIn() || !auth()->user()->inGroup('admin')) {
+            return redirect()->to('/login')->with('error', 'Anda harus login sebagai Admin.');
+        }
+
+        // 2. Cek apakah tabel staf masih kosong
+        if ($this->StafModel->cekTabelKosong()) {
+            return redirect()->to('/admin/staf/impor')->with('info', 'Tabel staf kosong. Silakan impor data terlebih dahulu.');
+        }    
+
+    // Ambil profil staf yang sedang login menggunakan helper kustom kita
         $staf = staf_profile();
-
-        // Jika user yang login ternyata tidak terikat dengan data staf manapun
-
 
         // Kirim data staf ke View
         $data = [
@@ -39,6 +46,7 @@ class Pengguna extends BaseController
 
         return view('pengguna/dashboard', ['pengaturan' => $pengaturan, 'user' => $staf]);
     }
+    
     public function getProfil(): string
     {
         // Ambil profil staf yang sedang login menggunakan helper kustom kita

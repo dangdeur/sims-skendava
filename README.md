@@ -99,6 +99,14 @@ public string $baseURL = 'http://localhost:9920/';
 
 sesuaikan app/Config/Pengaturan.php
 
+Jalankan migrasi database
+```bash
+php spark migrate --all
+```
+Tambahkan admin
+php spark shield:user create
+php spark shield:user addgroup
+
 import data Pendidik dan Tenaga kependidikan kedalam tabel staf
 sesuaikan Commands/SyncStafToShield.php
 $user = new User([
