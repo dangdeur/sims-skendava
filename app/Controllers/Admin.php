@@ -10,6 +10,13 @@ use App\Models\StafModel;
 class Admin extends BaseController
 {
     protected $stafModel;
+    private $Hari = [
+        1 => 'Senin',
+        2 => 'Selasa',
+        3 => 'Rabu',
+        4 => 'Kamis',
+        5 => 'Jumat'
+    ];
 
     public function __construct()
     {
@@ -134,6 +141,97 @@ class Admin extends BaseController
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat membaca file: ' . $e->getMessage());
         }
+    }
+
+    public function getImportJadwal()
+    {
+        $filePath = WRITEPATH . 'uploads/jadwal_PBM.xlsx';
+        $spreadsheet = IOFactory::load($filePath);
+        $sheet = $spreadsheet->getActiveSheet();
+        $rows = $sheet->toArray(null, true, true, true);
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        $guruModel   = new \App\Models\GuruModel();
+        $kelasModel  = new \App\Models\KelasModel();
+        $jadwalModel = new \App\Models\JadwalPbmModel();
+
+        // 1. Ambil header jam/hari (kolom 10 sampai 56)
+        $header = $rows[1];
+        $jamColumns = [];
+        foreach ($header as $colLetter => $headerValue) {
+            if (is_numeric($headerValue) && (int)$headerValue >= 10 && (int)$headerValue <= 56) {
+                $jamColumns[$colLetter] = (int)$headerValue;
+            }
+        }
+
+        // 2. Loop Data
+        for ($i = 2; $i <= count($rows); $i++) {
+            $row = $rows[$i];
+
+            $kodeGuru = trim($row['A'] ?? '');
+            $namaGuru = trim($row['B'] ?? '');
+            $mapel    = trim($row['C'] ?? '');
+
+            if (empty($namaGuru) || empty($mapel)) {
+                continue;
+            }
+
+            // Insert/Get Guru
+            $guru = $guruModel->where('nama_guru', $namaGuru)->first();
+            $guruId = $guru ? $guru['id'] : $guruModel->insert([
+                'kode_guru' => $kodeGuru,
+                'nama_guru' => $namaGuru
+            ]);
+
+            // Unpivot kolom 10 - 56
+            foreach ($jamColumns as $colLetter => $kodeSlot) {
+                $kodeKelas = trim($row[$colLetter] ?? '');
+
+                if (!empty($kodeKelas) && is_numeric($kodeKelas)) {
+                    // Parsing kode slot jadwal (2 digit: digit 1 = hari, digit 2 = jam ke)
+                    $digitHari = (int) substr((string)$kodeSlot, 0, 1);
+                    $digitJam  = (int) substr((string)$kodeSlot, 1, 1);
+
+                    $namaHari = $this->mapHari[$digitHari] ?? 'Lainnya';
+                    $jamKe    = $digitJam + 1; // 0 = Jam ke-1, 1 = Jam ke-2, dst.
+
+                    // Dapatkan ID Kelas melalui helper konversi independen
+                    $kelasId = $this->getOrInsertKelasByKode($kodeKelas, $kelasModel);
+
+                    // Insert Jadwal Detail
+                    $jadwalModel->insert([
+                        'guru_id'   => $guruId,
+                        'kelas_id'  => $kelasId,
+                        'mapel'     => $mapel,
+                        'hari'      => $digitHari,
+                        'nama_hari' => $namaHari,
+                        'jam_ke'    => $jamKe,
+                        'kode_slot' => $kodeSlot
+                    ]);
+                }
+            }
+        }
+
+        $db->transComplete();
+
+        return "Proses Impor Berhasil Dijalankan!";
+    }
+
+    private function getOrInsertKelasByKode($kodeKelas, $kelasModel)
+    {
+        $kodeStr = str_pad((string)$kodeKelas, 3, '0', STR_PAD_LEFT);
+        $kelas   = $kelasModel->where('kode_kelas', $kodeStr)->first();
+
+        if ($kelas) {
+            return $kelas['id'];
+        }
+
+        // Gunakan fungsi konversi independen
+        $dataRombel = KelasConverter::convertKodeKeRombel($kodeStr);
+
+        return $kelasModel->insert($dataRombel);
     }
 }
 

@@ -1,11 +1,13 @@
 # Sistem Administrasi Manajemen Sekolah
+
 ## Pengujian
-|               | Versi         |
-| ------------- |:------------- |
-| OS      | Ubuntu 24.04.5, Debian 11 |
-| PHP     | PHP-FPM 8.3.6, PHP8.4.12      |
-| Web Server | Nginx 1.24.0      |
-| DB | MariaDB 10.5.29,15.1      |
+
+|            | Versi                     |
+| ---------- | :------------------------ |
+| OS         | Ubuntu 24.04.5, Debian 11 |
+| PHP        | PHP-FPM 8.3.6, PHP8.4.12  |
+| Web Server | Nginx 1.24.0              |
+| DB         | MariaDB 10.5.29,15.1      |
 
 ## Installasi Dependensi
 
@@ -14,6 +16,7 @@
 ```
 
 ## Clone aplikasi
+
 ```bash
 cd /var/www/
 git clone https://github.com/dangdeur/sims-skendava.git
@@ -22,7 +25,9 @@ composer update
 chown -R www-data:www-data /var/www/sims-skendava/writable/
 chmod -R 775 /var/www/sims-skendava/writable/
 ```
+
 ## Virtual host
+
 ```bash
 # nano /etc/nginx/sites-available/sims-skendava
 ```
@@ -50,18 +55,25 @@ server {
 ```
 
 Buat simbolic links
+
 ```bash
 ln -s /etc/nginx/sites-available/sims-skendava /etc/nginx/sites-enabled/
 ```
+
 Restart nginx
+
 ```bash
 systemctl restart nginx
 ```
+
 ## Database
+
 Buat database untuk aplikasi
+
 ```bash
 mysql -u root
 ```
+
 ```mysql
 MariaDB [(none)]> CREATE DATABASE skendava;
 MariaDB [(none)]> CREATE USER 'skendava'@'%' IDENTIFIED BY 'password';
@@ -70,18 +82,23 @@ MariaDB [(none)]> FLUSH PRIVILEGES;
 MariaDB [(none)]> EXIT
 ```
 
-
 ## Pengaturan
+
 Buat file .env dari template
+
 ```bash
 cp env .env
 ```
+
 Edit file .env dan ubah ENVIRONMENT sesuai kebutuhan
+
 ```bash
 #CI_ENVIRONMENT = production
 CI_ENVIRONMENT = development
 ```
+
 Sesuaikan pengaturan DATABASE
+
 ```bash
 database.default.hostname = localhost
 database.default.database = skendava
@@ -91,29 +108,49 @@ database.default.DBDriver = MySQLi
 # database.default.DBPrefix =
 database.default.port = 3306
 ```
+
 app/Config/App.php
+sesuaikan port virtualhost yang digunakan web server
+
 ```bash
 public string $baseURL = 'http://localhost:9920/';
 ```
 
-sesuaikan app/Config/Pengaturan.php
-
 Jalankan migrasi database
+
 ```bash
 php spark migrate --all
 ```
-Tambahkan admin
+
+app/Database/Seeds/Jurusan.php
+Edit atau tambahkan jurusan
+
+```bash
+php spark db:seed Jurusan
+```
+
+Buat user admin
+
+```bash
 php spark shield:user create
-php spark shield:user addgroup
+php spark shield:user addgroup -n admin -g admin
+```
+
+sesuaikan app/Config/Pengaturan.php
 
 import data Pendidik dan Tenaga kependidikan kedalam tabel staf
 sesuaikan Commands/SyncStafToShield.php
+
+```bash
 $user = new User([
-                 'username' => $email, // Menggunakan email sebagai username sesuai permintaan
-                 'email'    => $email,
-                 'password' => 'password', // Password default, atau gunakan env('PASSWORD')
-                ]);
- $newUser->addGroup('staf');
+'username' => $email, // Menggunakan email sebagai username sesuai permintaan
+'email' => $email,
+'password' => 'password', // Password default, atau gunakan env('PASSWORD')
+]);
+$newUser->addGroup('staf');
+```
+
+Jalankan perintah berikut
 
 ```bash
 php spark auth:sync-staf

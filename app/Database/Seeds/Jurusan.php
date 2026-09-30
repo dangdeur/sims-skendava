@@ -20,6 +20,6 @@ class Jurusan extends Seeder
             ['kode_jurusan' => 8, 'nama_jurusan' => 'Teknik Sepeda Motor','singkatan_jurusan' => 'TSM'],
         ];
 
-        $this->db->table('ref_jurusans')->insertBatch($data);
+        $this->db->table('jurusan')->insertBatch($data);
     }
 }

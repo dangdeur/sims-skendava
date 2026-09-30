@@ -31,7 +31,7 @@ class JadwalPBM extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addKey('kode_jurusan');
-        $this->forge->createTable('ref_jurusans');
+        $this->forge->createTable('jurusan');
 
         // 2. Tabel Master Kelas / Rombel
         $this->forge->addField([
@@ -137,14 +137,14 @@ class JadwalPBM extends Migration
         $this->forge->addForeignKey('guru_id', 'guru', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('kelas_id', 'kelas', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addKey(['hari', 'jam_ke']);
-        $this->forge->createTable('jadwal_pbms');
+        $this->forge->createTable('jadwal_pbm');
     }
 
     public function down()
     {
-        $this->forge->dropTable('jadwal_pbms');
+        $this->forge->dropTable('jadwal_pbm');
         $this->forge->dropTable('guru');
         $this->forge->dropTable('kelas');
-        $this->forge->dropTable('ref_jurusan');
+        $this->forge->dropTable('jurusan');
     }
 }
